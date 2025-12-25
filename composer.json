@@ -1,0 +1,18 @@
+{
+    "name": "not/php_records_project",
+    "autoload": {
+        "psr-4": {
+            "Not\\PhpRecordsProject\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "thanakorn-not",
+            "email": "thanakorningkawara@gmail.com"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^5.2",
+        "mpdf/mpdf": "^8.2"
+    }
+}
