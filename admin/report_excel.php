@@ -12,16 +12,17 @@ $module_id   = $_GET['module_id'] ?? '';
 $year        = $_GET['year'] ?? '';
 $term        = $_GET['term'] ?? '';
 $district_id = $_GET['district_id'] ?? '';
+$field       = $_GET['field'] ?? '';
+$keyword     = trim($_GET['keyword'] ?? '');
 
 if (!$module_id || !is_numeric($module_id)) {
     die('Invalid module');
 }
 
 /* ===============================
-   Mapping คอลัมน์ (ต้องตรงกับ report)
+   Mapping คอลัมน์
 ================================ */
 $display_columns_map = [
-
     '1' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -47,7 +48,7 @@ $display_columns_map = [
         'workplace' => 'สถานที่ทำงาน',
         'other' => 'อื่นๆ',
     ],
-     '3' => [
+    '3' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
         'year' => 'ปีการศึกษา',
@@ -59,7 +60,6 @@ $display_columns_map = [
         'training_date' => 'วันเดือนปีที่ได้รับการอบรม',
         'ability' => 'ความสามารถพิเศษ',
     ],
-
     '5' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -68,7 +68,6 @@ $display_columns_map = [
         'created_by_name' => 'ผู้บันทึก',
         'created_at' => 'วันที่บันทึก',
     ],
-
     '16' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -82,18 +81,22 @@ $display_columns_map = [
     ],
 ];
 
-if (!isset($display_columns_map[$module_id])) {
-    die('Module not supported');
-}
 
 $table = "records_module{$module_id}";
-$columns = $display_columns_map[$module_id];
+
+$col_stmt = $pdo->query("SHOW COLUMNS FROM $table");
+$all_cols = $col_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+// ตัด column ระบบ
+$exclude = ['id','created_at','updated_at','user_id','created_by','created_by_name'];
+$columns = array_values(array_diff($all_cols, $exclude));
+
 
 /* ===============================
    SQL
 ================================ */
 $select = [];
-foreach (array_keys($columns) as $c) {
+foreach ($columns as $c) {
     if ($c === 'district_name') {
         $select[] = "d.district_name";
     } else {
@@ -110,6 +113,7 @@ $sql = "
 
 $params = [];
 
+// filter ปกติ
 if ($year !== '') {
     $sql .= " AND r.year = :year";
     $params[':year'] = $year;
@@ -121,6 +125,20 @@ if ($term !== '') {
 if ($district_id !== '') {
     $sql .= " AND r.district_id = :district_id";
     $params[':district_id'] = (int)$district_id;
+}
+
+// 🔍 filter จากหน้าค้นหา
+if ($field && $keyword && in_array($field, $columns)) {
+
+    $exactWords = ['มี', 'ไม่มี', 'ชาย', 'หญิง', 'เปิด', 'ปิด'];
+
+    if (in_array($keyword, $exactWords)) {
+        $sql .= " AND r.$field = :kw";
+        $params[':kw'] = $keyword;
+    } else {
+        $sql .= " AND r.$field LIKE :kw";
+        $params[':kw'] = "%$keyword%";
+    }
 }
 
 $stmt = $pdo->prepare($sql);
@@ -144,7 +162,7 @@ foreach ($columns as $header) {
 $row = 2;
 foreach ($data as $record) {
     $col = 'A';
-    foreach (array_keys($columns) as $key) {
+    foreach ($columns as $key) {
         $sheet->setCellValue($col . $row, $record[$key] ?? '');
         $col++;
     }

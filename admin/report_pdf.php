@@ -13,16 +13,17 @@ $module_id   = $_GET['module_id'] ?? '';
 $year        = $_GET['year'] ?? '';
 $term        = $_GET['term'] ?? '';
 $district_id = $_GET['district_id'] ?? '';
+$field       = $_GET['field'] ?? '';
+$keyword     = trim($_GET['keyword'] ?? '');
 
 if (!$module_id || !is_numeric($module_id)) {
     die('Invalid module');
 }
 
 /* =====================================================
-   2. Mapping คอลัมน์รายงาน
+   2. Mapping คอลัมน์
 ===================================================== */
 $columns_map = [
-
     '1' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -48,7 +49,7 @@ $columns_map = [
         'workplace' => 'สถานที่ทำงาน',
         'other' => 'อื่นๆ',
     ],
-     '3' => [
+    '3' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
         'year' => 'ปีการศึกษา',
@@ -60,7 +61,6 @@ $columns_map = [
         'training_date' => 'วันเดือนปีที่ได้รับการอบรม',
         'ability' => 'ความสามารถพิเศษ',
     ],
-
     '5' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -69,7 +69,6 @@ $columns_map = [
         'created_by_name' => 'ผู้บันทึก',
         'created_at' => 'วันที่บันทึก',
     ],
-
     '16' => [
         'district_name' => 'อำเภอ',
         'term' => 'ภาคเรียน',
@@ -83,21 +82,25 @@ $columns_map = [
     ],
 ];
 
-if (!isset($columns_map[$module_id])) {
-    die('Module not supported');
-}
+$table = "records_module{$module_id}";
 
-$table   = "records_module{$module_id}";
-$columns = $columns_map[$module_id];
+$col_stmt = $pdo->query("SHOW COLUMNS FROM $table");
+$all_cols = $col_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+// ตัด column ระบบ
+$exclude = ['id','created_at','updated_at','user_id','created_by','created_by_name'];
+$columns = array_values(array_diff($all_cols, $exclude));
 
 /* =====================================================
    3. SQL
 ===================================================== */
 $select = [];
-foreach (array_keys($columns) as $col) {
-    $select[] = ($col === 'district_name')
-        ? "d.district_name"
-        : "r.$col";
+foreach ($columns as $c) {
+    if ($c === 'district_name') {
+        $select[] = "d.district_name";
+    } else {
+        $select[] = "r.$c";
+    }
 }
 
 $sql = "
@@ -109,6 +112,7 @@ $sql = "
 
 $params = [];
 
+// filter ปกติ
 if ($year !== '') {
     $sql .= " AND r.year = :year";
     $params[':year'] = $year;
@@ -122,33 +126,42 @@ if ($district_id !== '') {
     $params[':district_id'] = (int)$district_id;
 }
 
+// 🔍 filter ค้นหา
+if ($field && $keyword && in_array($field, $columns)) {
+
+    $exactWords = ['มี', 'ไม่มี', 'เปิด', 'ปิด', 'ชาย', 'หญิง'];
+
+    if (in_array($keyword, $exactWords)) {
+        $sql .= " AND r.$field = :kw";
+        $params[':kw'] = $keyword;
+    } else {
+        $sql .= " AND r.$field LIKE :kw";
+        $params[':kw'] = "%$keyword%";
+    }
+}
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 /* =====================================================
-   4. HTML สำหรับ PDF
+   4. HTML
 ===================================================== */
 $html = '
 <h2 style="text-align:center;">รายงานข้อมูล</h2>
-
 <table width="100%" border="1" cellspacing="0" cellpadding="6">
-<thead>
-<tr>';
+<thead><tr>';
 
 foreach ($columns as $header) {
     $html .= "<th>{$header}</th>";
 }
 
-$html .= '</tr>
-</thead>
-<tbody>';
+$html .= '</tr></thead><tbody>';
 
 foreach ($data as $row) {
     $html .= '<tr>';
-    foreach (array_keys($columns) as $key) {
-        $value = $row[$key] ?? '-';
-        $html .= "<td>{$value}</td>";
+    foreach ($columns as $key) {
+        $html .= '<td>' . ($row[$key] ?? '-') . '</td>';
     }
     $html .= '</tr>';
 }
@@ -156,7 +169,7 @@ foreach ($data as $row) {
 $html .= '</tbody></table>';
 
 /* =====================================================
-   5. ตั้งค่า mPDF + ฟอนต์ไทย
+   5. mPDF + ฟอนต์
 ===================================================== */
 $defaultConfig = (new ConfigVariables())->getDefaults();
 $fontDirs = $defaultConfig['fontDir'];
@@ -172,39 +185,22 @@ $mpdf = new Mpdf([
     ]),
     'fontdata' => $fontData + [
         'thsarabunnew' => [
-            'R'  => 'THSarabunNew.ttf',
-            'B'  => 'THSarabunNew Bold.ttf',
-            'I'  => 'THSarabunNew Italic.ttf',
-            'BI' => 'THSarabunNew BoldItalic.ttf',
+            'R' => 'THSarabunNew.ttf',
+            'B' => 'THSarabunNew Bold.ttf',
         ]
     ],
     'default_font' => 'thsarabunnew'
 ]);
 
-/* ================= CSS (สำคัญมาก) ================= */
 $mpdf->WriteHTML('
 <style>
-body {
-    font-family: "thsarabunnew";
-    font-size: 16pt;
-}
-table {
-    border-collapse: collapse;
-}
-th {
-    background: #f0f0f0;
-    font-weight: bold;
-}
-td, th {
-    text-align: center;
-}
+body { font-size:16pt; }
+table { border-collapse: collapse; }
+th { background:#f0f0f0; font-weight:bold; }
+td, th { text-align:center; }
 </style>
 ');
 
 $mpdf->WriteHTML($html);
-
-/* =====================================================
-   6. ส่งออก PDF
-===================================================== */
 $mpdf->Output("module_{$module_id}_report.pdf", 'D');
 exit;
