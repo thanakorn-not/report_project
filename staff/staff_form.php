@@ -36,8 +36,15 @@ if (isset($module['is_active']) && $module['is_active'] == 0) {
 
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>บันทึกข้อมูล - <?= htmlspecialchars($module['module_name']) ?></title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'IBM Plex Sans Thai', sans-serif;
+            }
+        </style>
     </head>
 
     <body class="bg-gray-100 py-10">
@@ -130,8 +137,15 @@ if ($success_status === '1' && $active_district_id) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>บันทึกข้อมูล - <?= htmlspecialchars($module['module_name']) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 py-10">

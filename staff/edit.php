@@ -36,18 +36,18 @@ if (!$record) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $set_parts = [];
     $params = [];
-    
+
     foreach (array_keys($fields) as $col) {
         if ($col === 'district_name') continue; // ข้ามฟิลด์ที่ Join มาจากตารางอื่น
-        
+
         $set_parts[] = "{$col} = ?";
         $params[] = $_POST[$col] ?? '';
     }
-    
+
     $params[] = $id;
     $sql = "UPDATE $table SET " . implode(', ', $set_parts) . " WHERE id = ?";
     $update_stmt = $pdo->prepare($sql);
-    
+
     if ($update_stmt->execute($params)) {
         echo "<script>alert('บันทึกสำเร็จ'); window.location='staff_reports.php?module_id=$module_id';</script>";
         exit;
@@ -57,25 +57,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แก้ไขข้อมูลโมดูล <?= $module_id ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+        }
+    </style>
 </head>
+
 <body class="bg-gray-100 p-6">
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
         <h2 class="text-xl font-bold mb-6 border-b pb-2">✏️ แก้ไขข้อมูล (แบบฟอร์มที่ <?= $module_id ?>)</h2>
-        
+
         <form method="POST">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <?php foreach ($fields as $col => $label): ?>
-                    <?php if ($col === 'district_name') continue; // อำเภอปกติจะแก้ไม่ได้จากหน้านี้ ?>
-                    
+                    <?php if ($col === 'district_name') continue; // อำเภอปกติจะแก้ไม่ได้จากหน้านี้ 
+                    ?>
+
                     <div class="flex flex-col">
                         <label class="font-semibold text-gray-700 mb-1"><?= $label ?></label>
-                        <input type="text" name="<?= $col ?>" 
-                               value="<?= htmlspecialchars($record[$col] ?? '') ?>"
-                               class="border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none">
+                        <input type="text" name="<?= $col ?>"
+                            value="<?= htmlspecialchars($record[$col] ?? '') ?>"
+                            class="border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -87,4 +97,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
+
 </html>

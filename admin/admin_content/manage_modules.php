@@ -90,8 +90,8 @@ $error_msg = $_SESSION['error'] ?? null;
 unset($_SESSION['success'], $_SESSION['error']);
 ?>
 
-<div class="p-6">
-  <h2 class="text-2xl font-bold text-blue-800 mb-6">📁 จัดการโมดูล</h2>
+<div class="p-4 md:p-6">
+  <h2 class="text-xl md:text-2xl font-bold text-blue-800 mb-6">📁 จัดการโมดูล</h2>
 
   <?php if ($success_msg): ?>
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -103,31 +103,31 @@ unset($_SESSION['success'], $_SESSION['error']);
     </div>
   <?php endif; ?>
 
-  <form method="POST" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
+  <form method="POST" class="bg-white p-4 md:p-6 rounded-xl shadow-md border border-gray-200 mb-8">
     <input type="hidden" name="add_module" value="1">
     <label for="module_name" class="block text-gray-700 font-medium mb-2">ชื่อโมดูลใหม่:</label>
-    <div class="flex gap-3">
+    <div class="flex flex-col md:flex-row gap-3">
       <input type="text" id="module_name" name="module_name"
-        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:outline-none"
+        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:outline-none w-full"
         placeholder="เช่น ข้อมูลนักเรียน, ผลการเรียน ฯลฯ" required>
-      <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-medium px-5 py-2 rounded-lg">
+      <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-medium px-5 py-2 rounded-lg w-full md:w-auto">
         ➕ เพิ่มโมดูล
       </button>
     </div>
   </form>
 
-  <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+  <div class="bg-white p-4 md:p-6 rounded-xl shadow-md border border-gray-200">
     <h3 class="text-lg font-semibold text-blue-900 mb-4">📋 รายการโมดูลทั้งหมด (<?= count($modules) ?> รายการ)</h3>
 
     <?php if (count($modules) > 0): ?>
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-left border-collapse min-w-[600px]">
           <thead class="bg-blue-800 text-white">
             <tr>
-              <th class="py-3 px-4 border-b">ID</th>
+              <th class="py-3 px-4 border-b w-16">ID</th>
               <th class="py-3 px-4 border-b">ชื่อโมดูล</th>
-              <th class="py-3 px-4 border-b text-center">สถานะ</th>
-              <th class="py-3 px-4 border-b text-center">ดำเนินการ</th>
+              <th class="py-3 px-4 border-b text-center w-32">สถานะ</th>
+              <th class="py-3 px-4 border-b text-center w-24">ดำเนินการ</th>
             </tr>
           </thead>
           <tbody>
@@ -135,12 +135,12 @@ unset($_SESSION['success'], $_SESSION['error']);
               <tr class="hover:bg-gray-50">
                 <td class="py-3 px-4 border-b"><?= $m['id']; ?></td>
                 <td class="py-3 px-4 border-b">
-                    <form method="POST" class="flex items-center gap-2">
+                    <form method="POST" class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <input type="hidden" name="edit_module" value="1">
                         <input type="hidden" name="id" value="<?= $m['id']; ?>">
                         <input type="text" name="module_name" value="<?= htmlspecialchars($m['module_name']); ?>"
-                            required class="border border-gray-300 rounded-lg px-2 py-1 flex-1 min-w-[200px]">
-                        <button type="submit" class="text-indigo-600 hover:text-indigo-800 text-sm">💾 บันทึก</button>
+                            required class="border border-gray-300 rounded-lg px-2 py-1 flex-1 w-full sm:w-auto min-w-[200px]">
+                        <button type="submit" class="text-indigo-600 hover:text-indigo-800 text-sm whitespace-nowrap mt-1 sm:mt-0">💾 บันทึก</button>
                     </form>
                 </td>
                 <td class="py-3 px-4 border-b text-center">
@@ -149,7 +149,7 @@ unset($_SESSION['success'], $_SESSION['error']);
                         <input type="hidden" name="id" value="<?= $m['id']; ?>">
                         <input type="hidden" name="current_status" value="<?= $m['is_active']; ?>">
                         <button type="submit" 
-                            class="px-2 py-1 text-xs font-semibold rounded-full 
+                            class="px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap
                             <?= $m['is_active'] ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-red-100 text-red-800 hover:bg-red-200' ?>">
                             <?= $m['is_active'] ? '✅ เปิดใช้งาน' : '❌ ปิดใช้งาน' ?>
                         </button>
@@ -158,7 +158,7 @@ unset($_SESSION['success'], $_SESSION['error']);
                 <td class="py-3 px-4 border-b text-center">
                   <a href="?admin_content=manage_modules.php&delete=<?= $m['id']; ?>"
                     onclick="return confirm('คำเตือน: การลบโมดูลนี้จะลบตาราง records_module<?= $m['id']; ?> ด้วย! คุณแน่ใจหรือไม่ที่จะลบโมดูลนี้?');"
-                    class="text-red-600 hover:text-red-800 font-medium">🗑️ ลบ</a>
+                    class="text-red-600 hover:text-red-800 font-medium whitespace-nowrap">🗑️ ลบ</a>
                 </td>
               </tr>
             <?php endforeach; ?>

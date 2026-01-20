@@ -36,8 +36,8 @@ if (isset($_GET['success'])) {
 }
 ?>
 
-<div class="p-6">
-    <h2 class="text-2xl font-bold text-blue-800 mb-6">👤 จัดการผู้ใช้งาน</h2>
+<div class="p-4 md:p-6">
+    <h2 class="text-xl md:text-2xl font-bold text-blue-800 mb-6">👤 จัดการผู้ใช้งาน</h2>
 
     <?php
     // 💡 Logic แสดงผลข้อความแจ้งเตือน (Success/Error)
@@ -53,84 +53,86 @@ if (isset($_GET['success'])) {
 
     <div class="flex justify-end mb-4">
         <button onclick="openModal('add', this)"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center shadow-md">
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center shadow-md text-sm md:text-base">
             ➕ เพิ่มผู้ใช้งาน
         </button>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ID
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ชื่อผู้ใช้งาน
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ชื่อ-สกุล
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        สิทธิ์
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ศูนย์/อำเภอ
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ดำเนินการ
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <?php foreach ($users as $i => $user):
-                    // แปลงข้อมูลเป็น JSON เพื่อส่งไปให้ JavaScript ในการแก้ไข (ต้องทำในลูป)
-                    $user_json = htmlspecialchars(json_encode($user), ENT_QUOTES, 'UTF-8');
-                ?>
-                    <tr data-user='<?= $user_json ?>' class="<?= ($user['role'] === 'admin') ? 'bg-indigo-50' : '' ?>">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            <?= htmlspecialchars($user['id']) ?>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            <?= htmlspecialchars($user['username']) ?>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            <?= htmlspecialchars($user['name']) ?>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                <?= ($user['role'] === 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800' ?>">
-                                <?= ($user['role'] === 'admin') ? 'Admin' : 'Staff' ?>
-                            </span>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            <?= htmlspecialchars($user['district_name'] ?? '-') ?>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="openModal('edit', this)"
-                                class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                แก้ไข
-                            </button>
-
-                            <?php if ($user['id'] != 1 && $user['id'] != ($_SESSION['user_id'] ?? 0)): ?>
-                                <a href="delete_user.php?id=<?= $user['id'] ?>"
-                                    onclick="return confirm('ยืนยันการลบผู้ใช้งาน: <?= htmlspecialchars($user['name']) ?>?')"
-                                    class="text-red-600 hover:text-red-900">
-                                    ลบ
-                                </a>
-                            <?php else: ?>
-                                <span class="text-gray-400 text-xs">ลบไม่ได้</span>
-                            <?php endif; ?>
-                        </td>
+    <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            ID
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            ชื่อผู้ใช้งาน
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            ชื่อ-สกุล
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            สิทธิ์
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            ศูนย์/อำเภอ
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            ดำเนินการ
+                        </th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php foreach ($users as $i => $user):
+                        // แปลงข้อมูลเป็น JSON เพื่อส่งไปให้ JavaScript ในการแก้ไข (ต้องทำในลูป)
+                        $user_json = htmlspecialchars(json_encode($user), ENT_QUOTES, 'UTF-8');
+                    ?>
+                        <tr data-user='<?= $user_json ?>' class="<?= ($user['role'] === 'admin') ? 'bg-indigo-50' : '' ?>">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <?= htmlspecialchars($user['id']) ?>
+                            </td>
+
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <?= htmlspecialchars($user['username']) ?>
+                            </td>
+
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <?= htmlspecialchars($user['name']) ?>
+                            </td>
+
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <?= ($user['role'] === 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800' ?>">
+                                    <?= ($user['role'] === 'admin') ? 'Admin' : 'Staff' ?>
+                                </span>
+                            </td>
+
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <?= htmlspecialchars($user['district_name'] ?? '-') ?>
+                            </td>
+
+                            <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button onclick="openModal('edit', this)"
+                                    class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                    แก้ไข
+                                </button>
+
+                                <?php if ($user['id'] != 1 && $user['id'] != ($_SESSION['user_id'] ?? 0)): ?>
+                                    <a href="delete_user.php?id=<?= $user['id'] ?>"
+                                        onclick="return confirm('ยืนยันการลบผู้ใช้งาน: <?= htmlspecialchars($user['name']) ?>?')"
+                                        class="text-red-600 hover:text-red-900">
+                                        ลบ
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-gray-400 text-xs">ลบไม่ได้</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="user-modal" class="fixed inset-0 z-50 overflow-y-auto hidden">
@@ -140,7 +142,7 @@ if (isset($_GET['success'])) {
             </div>
 
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
                 <form id="user-form" action="save_user.php" method="POST">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900 mb-4">เพิ่มผู้ใช้งานใหม่</h3>

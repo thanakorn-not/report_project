@@ -8,30 +8,36 @@ require_once __DIR__ . "/config/config.php";
 $userCount    = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $moduleCount  = $pdo->query("SELECT COUNT(*) FROM modules")->fetchColumn();
 $studentCount = 0;
-$totalModules = 17; 
+$totalModules = 17;
 
 for ($i = 1; $i <= $totalModules; $i++) {
-    $tableName = "records_module" . $i;
-    
-    // ตรวจสอบว่าตารางมีอยู่จริงหรือไม่ก่อน query (ป้องกัน Error)
-    try {
-        $count = $pdo->query("SELECT COUNT(*) FROM {$tableName}")->fetchColumn();
-        $studentCount += (int)$count; 
-    } catch (PDOException $e) {
-        // ถ้าตารางไม่มีอยู่ (เช่น records_module5 ยังไม่ได้สร้าง) จะข้ามไป
-        continue; 
-    }
+  $tableName = "records_module" . $i;
+
+  // ตรวจสอบว่าตารางมีอยู่จริงหรือไม่ก่อน query (ป้องกัน Error)
+  try {
+    $count = $pdo->query("SELECT COUNT(*) FROM {$tableName}")->fetchColumn();
+    $studentCount += (int)$count;
+  } catch (PDOException $e) {
+    // ถ้าตารางไม่มีอยู่ (เช่น records_module5 ยังไม่ได้สร้าง) จะข้ามไป
+    continue;
+  }
 }
 ?>
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบสารสนเทศเพื่อการศึกษา | สกร.นครปฐม</title>
   <link rel="icon" type="image/png" href="/php_records_project/img/logo.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style> body { font-family: 'Prompt', sans-serif; } </style>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-100 flex min-h-screen">
@@ -40,16 +46,16 @@ for ($i = 1; $i <= $totalModules; $i++) {
   <?php include "includes/sidebar_public.php"; ?>
 
   <!-- ✅ เนื้อหาหลัก -->
-  <main class="flex-1 flex flex-col">
-    
+  <main class="flex-1 flex flex-col lg:ml-64 pt-16 lg:pt-0">
+
     <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-700 to-blue-900 text-white text-center py-10 shadow-md">
-      <h1 class="text-3xl font-bold">ระบบสารสนเทศเพื่อการศึกษา</h1>
-      <p class="text-blue-100 mt-2">สำนักงานส่งเสริมการเรียนรู้ จังหวัดนครปฐม</p>
+    <header class="bg-gradient-to-r from-blue-700 to-blue-900 text-white text-center py-6 md:py-10 shadow-md">
+      <h1 class="text-2xl md:text-3xl font-bold px-4">ระบบสารสนเทศเพื่อการศึกษา</h1>
+      <p class="text-blue-100 mt-2 text-sm md:text-base">สำนักงานส่งเสริมการเรียนรู้ จังหวัดนครปฐม</p>
     </header>
 
     <!-- Content -->
-    <section class="flex-grow max-w-5xl mx-auto mt-10 px-6">
+    <section class="flex-grow max-w-5xl mx-auto mt-6 md:mt-10 px-4 md:px-6">
 
       <!-- ✅ กล่องข้อมูลระบบ -->
       <div class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-blue-800">
@@ -75,7 +81,7 @@ for ($i = 1; $i <= $totalModules; $i++) {
             📌 เข้าสู่ระบบเจ้าหน้าที่
           </a>
 
-          
+
         </div>
       </div>
 
@@ -104,4 +110,5 @@ for ($i = 1; $i <= $totalModules; $i++) {
 
   </main>
 </body>
+
 </html>

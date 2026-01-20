@@ -78,34 +78,36 @@ $exclude_from_form = [
 ];
 ?>
 
-<div class="p-6 bg-gray-50 min-h-screen">
+<div class="p-4 md:p-6 bg-gray-50 min-h-screen">
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold text-gray-800">จัดการข้อมูลนักเรียน</h1>
-                <p class="text-blue-600 font-semibold uppercase tracking-wider text-sm">การแก้ไขข้อมูลรายการ #<?= $record_id ?></p>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800">จัดการข้อมูลนักเรียน</h1>
+                <p class="text-blue-600 font-semibold uppercase tracking-wider text-xs md:text-sm">การแก้ไขข้อมูลรายการ #<?= $record_id ?></p>
             </div>
-            <a href="admin_layout.php?admin_content=records_list.php&module=<?= $selected_module_id ?>" class="text-gray-500 hover:text-gray-800 text-sm font-medium">⬅ กลับหน้ารายการ</a>
+            <a href="admin_layout.php?admin_content=records_list.php&module=<?= $selected_module_id ?>" class="text-gray-500 hover:text-gray-800 text-sm font-medium flex items-center">
+                <span class="mr-1">⬅</span> กลับหน้ารายการ
+            </a>
         </div>
 
         <?= $status_message ?>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
-                <p class="text-gray-400 text-xs font-bold uppercase">โมดูลที่</p>
-                <p class="text-xl font-black text-gray-700"><?= $selected_module_id ?></p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+            <div class="bg-white p-3 md:p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
+                <p class="text-gray-400 text-[10px] md:text-xs font-bold uppercase">โมดูลที่</p>
+                <p class="text-lg md:text-xl font-black text-gray-700"><?= $selected_module_id ?></p>
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
-                <p class="text-gray-400 text-xs font-bold uppercase">รหัสอำเภอ</p>
-                <p class="text-xl font-black text-gray-700"><?= htmlspecialchars($record['district_id'] ?? 'N/A') ?></p>
+            <div class="bg-white p-3 md:p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
+                <p class="text-gray-400 text-[10px] md:text-xs font-bold uppercase">รหัสอำเภอ</p>
+                <p class="text-lg md:text-xl font-black text-gray-700"><?= htmlspecialchars($record['district_id'] ?? 'N/A') ?></p>
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
-                <p class="text-gray-400 text-xs font-bold uppercase">ปีการศึกษา</p>
-                <p class="text-xl font-black text-gray-700"><?= htmlspecialchars($record['year'] ?? '-') ?></p>
+            <div class="bg-white p-3 md:p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
+                <p class="text-gray-400 text-[10px] md:text-xs font-bold uppercase">ปีการศึกษา</p>
+                <p class="text-lg md:text-xl font-black text-gray-700"><?= htmlspecialchars($record['year'] ?? '-') ?></p>
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
-                <p class="text-gray-400 text-xs font-bold uppercase">ภาคเรียน</p>
-                <p class="text-xl font-black text-gray-700"><?= htmlspecialchars($record['term'] ?? '-') ?></p>
+            <div class="bg-white p-3 md:p-4 rounded-2xl shadow-sm border-t-4 border-blue-500">
+                <p class="text-gray-400 text-[10px] md:text-xs font-bold uppercase">ภาคเรียน</p>
+                <p class="text-lg md:text-xl font-black text-gray-700"><?= htmlspecialchars($record['term'] ?? '-') ?></p>
             </div>
         </div>
 
@@ -114,34 +116,34 @@ $exclude_from_form = [
                 <span class="mr-2">📝</span> ส่วนแก้ไขข้อมูลเฉพาะคอลัมน์
             </div>
             
-            <form method="POST" action="" class="p-8 md:p-10">
+            <form method="POST" action="" class="p-6 md:p-10">
                 <input type="hidden" name="module_id" value="<?= $selected_module_id ?>">
                 <input type="hidden" name="record_id" value="<?= $record_id ?>">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php 
                     foreach ($record as $column => $value): 
                         if (in_array(strtolower($column), $exclude_from_form)) continue; 
                     ?>
                         <div class="flex flex-col">
-                            <label class="text-xs font-bold text-gray-400 uppercase mb-2 ml-1">
+                            <label class="text-xs font-bold text-gray-400 uppercase mb-2 ml-1 break-words">
                                 <?= str_replace('_', ' ', $column) ?>
                             </label>
                             
                             <?php if (strlen($value ?? '') > 150): ?>
                                 <textarea name="field[<?= $column ?>]" rows="3" 
-                                    class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-blue-400 focus:bg-white transition outline-none bg-gray-50"><?= htmlspecialchars($value ?? '') ?></textarea>
+                                    class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-blue-400 focus:bg-white transition outline-none bg-gray-50 text-sm md:text-base"><?= htmlspecialchars($value ?? '') ?></textarea>
                             <?php else: ?>
                                 <input type="text" name="field[<?= $column ?>]" value="<?= htmlspecialchars($value ?? '') ?>" 
-                                    class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-blue-400 focus:bg-white transition outline-none bg-gray-50">
+                                    class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-blue-400 focus:bg-white transition outline-none bg-gray-50 text-sm md:text-base">
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
-                <div class="mt-10 pt-8 border-t border-gray-100 flex justify-end">
+                <div class="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-gray-100 flex justify-end">
                     <button type="submit" name="update_record" 
-                        class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition active:scale-95">
+                        class="w-full md:w-auto bg-blue-600 text-white px-8 md:px-10 py-3 md:py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition active:scale-95 text-sm md:text-base">
                         💾 บันทึกการเปลี่ยนแปลง
                     </button>
                 </div>
