@@ -1,5 +1,3 @@
-<?php echo "<!-- SIDEBAR LOADED -->"; ?>
-
 <!-- Mobile Header & Hamburger -->
 <div class="lg:hidden flex items-center justify-between p-4 bg-blue-900 text-white shadow-md w-full fixed top-0 left-0 z-50">
     <div class="flex items-center gap-3">

@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
@@ -62,6 +62,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     </section>
 
     <?php include '../includes/footer.php'; ?>
+    <?php ob_end_flush(); ?>
   </main>
 </body>
 

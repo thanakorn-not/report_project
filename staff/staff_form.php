@@ -73,7 +73,6 @@ if (isset($module['is_active']) && $module['is_active'] == 0) {
 // =====================================================================
 
 $active_district_id = $_SESSION['active_district_id'] ?? null;
-$active_district_name = '--- โปรดเลือกศูนย์ฯ ใน Sidebar ---';
 
 // ถ้ามี district_id ใน Session ให้ดึงชื่อเต็มมาแสดง
 if ($active_district_id) {
@@ -222,6 +221,37 @@ if ($success_status === '1' && $active_district_id) {
             </div>
 
         </form>
+        <div class="max-w-4xl mx-auto mt-4 bg-white p-4 rounded-xl shadow">
+    <h3 class="font-semibold mb-2 text-green-700">📥 Import ข้อมูลจาก Excel</h3>
+
+    <form action="import_excel.php" method="post" enctype="multipart/form-data">
+        
+        <input type="hidden" name="module_id" value="<?= htmlspecialchars($module_id ?? '') ?>">
+
+        <select name="term" required class="border p-2 rounded">
+            <option value="">-- เลือกภาคเรียน --</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+
+        <select name="year" required class="border p-2 rounded">
+            <option value="">-- เลือกปี --</option>
+            <option value="2568">2568</option>
+            <option value="2569">2569</option>
+        </select>
+
+        <!-- 🔴 ชื่อต้องตรงกับ import.php -->
+        <input type="file" name="file" required>
+
+        <button type="submit" name="import"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+            Import
+        </button>
+    </form>
+</div>
+
+        
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -34,13 +34,7 @@
         
     </ul>
 
-    <!-- ปุ่มเข้าสู่ระบบ -->
-    <div class="border-t border-blue-800 p-4">
-        <a href="login.php"
-           class="block px-5 py-2 bg-blue-600 hover:bg-blue-700 text-center rounded">
-           🔐 เข้าสู่ระบบเจ้าหน้าที่
-        </a>
-    </div>
+    
 </div>
 
 <script>

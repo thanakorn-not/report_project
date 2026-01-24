@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // ไฟล์: admin/admin_content/manage_modules.php (ฉบับปรับปรุง)
 
 // ✅ ตรวจสอบสิทธิ์การเข้าถึง (ใช้ $_SESSION ที่ถูกตั้งค่าโดย admin_layout.php)
